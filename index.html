@@ -20,7 +20,7 @@
             overflow-x: hidden;
         }
 
-        .anniversary-card, .message-card {
+        .card {
             background-color: rgba(255, 255, 255, 0.85);
             border-radius: 10px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
@@ -49,31 +49,21 @@
         }
 
         .photo-gallery {
-            display: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
             max-width: 90%;
-            overflow-y: auto;
-            margin-top: 20px;
-            padding-bottom: 20px;
-            position: absolute;
-            transition: opacity 0.5s ease;
-            z-index: -1;
+            margin: 20px auto;
         }
 
         .photo-gallery img {
             width: 100%;
-            max-width: 250px;
-            height: 250px;
             object-fit: cover;
-            margin: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .photo-gallery.active {
-            display: block;
-        }
-
-        .message-area textarea {
+        textarea {
             width: 100%;
             max-width: 500px;
             height: 100px;
@@ -91,6 +81,10 @@
             font-weight: bold;
             font-size: 18px;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -102,49 +96,32 @@
     <button class="btn" onclick="toggleMute()">🔊 Hidupkan Musik</button>
 
     <!-- Main Anniversary Card -->
-    <div class="anniversary-card" id="anniversaryCard">
+    <div id="mainPage" class="card">
         <h1>Happy Anniversary!</h1>
         <p>Hepi eniperseri yang ke 5 hehehe.... Ga kerasa udah 5 tahun aja kita. Banyak banget kan yang udah dilewatin.</p>
         <p>Iya, aku sadar kok kalau aku emang rada cuek. Bukan berarti aku nggak sayang, aku cuma lagi fokus buat kita ke depannya. Hectic banget tapi ya harus dihadapin. Hehehe.</p>
         <p>Yaudah, gitu dulu deh buat 5 tahun ini. My wishy yang terbaik buat kita nanti ke depannya. Semoga juga impian aku nikah di umur 25 dan punya 1 Milyar pertama di umur 25 bisa tercapai. Dan buat kamu, pokoknya semangat hadapin aja semuanya ya hehehe. Dah gitu aja.</p>
-        <p>Happy aniv yang ke 5 yaa - Borokokok -</p>
-        <button class="btn" onclick="togglePhotos()">💙 Lihat Foto Kenangan</button>
+        <p>Happy aniv yang ke 5 yaa - 💙 Borokokok 💙 -</p>
+        <textarea id="userMessage" placeholder="Tulis pesanmu di sini..."></textarea>
+        <button class="btn" onclick="saveMessage()">💙 Simpan Pesan 💙</button>
+        <p class="saved-message" id="savedMessage"></p>
+        <button class="btn" onclick="showGallery()">💙 Lihat Foto Kenangan</button>
     </div>
 
     <!-- Photo Gallery -->
-    <div class="photo-gallery" id="photoGallery">
-        <img src="photo1.jpg" alt="Memory 1">
-        <img src="photo2.jpg" alt="Memory 2">
-        <img src="photo3.jpg" alt="Memory 3">
-        <img src="photo4.jpg" alt="Memory 1">
-        <img src="photo5.jpg" alt="Memory 2">
-        <img src="photo6.jpg" alt="Memory 3">
-        <img src="photo7.jpg" alt="Memory 1">
-        <img src="photo8.jpg" alt="Memory 2">
-        <img src="photo9.jpg" alt="Memory 3">
-        <img src="photo10.jpg" alt="Memory 1">
-        <button class="btn" onclick="togglePhotos()">💙 Kembali 💙</button>
-    </div>
-
-    <!-- Message Card -->
-    <div class="message-card" id="messageCard">
-        <h1>Pesan Ucapan</h1>
-        <div class="message-area">
-            <textarea id="userMessage" placeholder="Tulis pesanmu di sini..."></textarea>
-            <br>
-            <button class="btn" onclick="saveMessage()">💙 Simpan Pesan 💙</button>
+    <div id="galleryPage" class="card hidden">
+        <h1>Kenangan Foto</h1>
+        <div class="photo-gallery">
+            <img src="photo1.jpg" alt="Memory 1">
+            <img src="photo2.jpg" alt="Memory 2">
+            <img src="photo3.jpg" alt="Memory 3">
+            <img src="photo4.jpg" alt="Memory 4">
+            <img src="photo5.jpg" alt="Memory 5">
         </div>
-        <div class="saved-message" id="savedMessage"></div>
-        <button class="btn" onclick="goBack()">💙 Kembali ke Halaman Utama 💙</button>
+        <button class="btn" onclick="showMain()">💙 Kembali ke Halaman Utama</button>
     </div>
 
     <script>
-        // Toggle Photo Gallery
-        function togglePhotos() {
-            const gallery = document.getElementById('photoGallery');
-            gallery.classList.toggle('active');
-        }
-
         // Toggle Background Music
         function toggleMute() {
             const music = document.getElementById('backgroundMusic');
@@ -152,32 +129,42 @@
             alert(music.muted ? 'Musik dimatikan' : 'Musik dihidupkan');
         }
 
-        function goBack() {
-            document.getElementById('messageCard').classList.add('hidden');
-            document.getElementById('photoGallery').classList.add('hidden');
-            document.getElementById('anniversaryCard').classList.remove('hidden');
+        // Show Photo Gallery
+        function showGallery() {
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('galleryPage').classList.remove('hidden');
         }
 
+        // Show Main Page
+        function showMain() {
+            document.getElementById('galleryPage').classList.add('hidden');
+            document.getElementById('mainPage').classList.remove('hidden');
+        }
+
+        // Save Message to LocalStorage
         function saveMessage() {
             const message = document.getElementById('userMessage').value.trim();
             if (message) {
                 localStorage.setItem('anniversaryMessage', message);
                 displaySavedMessage();
-                document.getElementById('userMessage').value = '';
+                alert('Pesan berhasil disimpan!');
             } else {
                 alert('Silakan tulis pesan sebelum menyimpan.');
             }
         }
 
+        // Display Saved Message
         function displaySavedMessage() {
             const savedMessage = localStorage.getItem('anniversaryMessage');
             if (savedMessage) {
                 document.getElementById('savedMessage').textContent = `Pesanmu: ${savedMessage}`;
+                document.getElementById('userMessage').value = savedMessage;
             } else {
                 document.getElementById('savedMessage').textContent = 'Belum ada pesan yang disimpan.';
             }
         }
 
+        // Initialize
         window.onload = function() {
             displaySavedMessage();
         };
