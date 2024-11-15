@@ -129,7 +129,59 @@
         <img src="photo10.jpg" alt="Memory 1">
         <button class="btn" onclick="togglePhotos()">💙 Kembali 💙</button>
     </div>
-
+        <!-- Message Card -->
+        <div class="message-card hidden" id="messageCard">
+            <h1>Pesan Ucapan</h1>
+            <div class="message-area">
+                <textarea id="userMessage" placeholder="Tulis pesanmu di sini..."></textarea>
+                <br>
+                <button class="btn" onclick="saveMessage()">💙 Simpan Pesan 💙</button>
+            </div>
+            <div class="saved-message" id="savedMessage"></div>
+            <button class="btn" onclick="goBack()">💙 Kembali ke Halaman Utama 💙</button>
+        </div>
+    
+        <script>
+            function togglePhotos() {
+                const gallery = document.getElementById('photoGallery');
+                gallery.classList.toggle('hidden');
+            }
+    
+            function showMessage() {
+                document.getElementById('anniversaryCard').classList.add('hidden');
+                document.getElementById('messageCard').classList.remove('hidden');
+                displaySavedMessage();
+            }
+    
+            function goBack() {
+                document.getElementById('messageCard').classList.add('hidden');
+                document.getElementById('photoGallery').classList.add('hidden');
+                document.getElementById('anniversaryCard').classList.remove('hidden');
+            }
+    
+            function saveMessage() {
+                const message = document.getElementById('userMessage').value.trim();
+                if (message) {
+                    localStorage.setItem('anniversaryMessage', message);
+                    displaySavedMessage();
+                    document.getElementById('userMessage').value = '';
+                } else {
+                    alert('Silakan tulis pesan sebelum menyimpan dan screen shot pesan setelah pesan muncul .');
+                }
+            }
+    
+            function displaySavedMessage() {
+                const savedMessage = localStorage.getItem('anniversaryMessage');
+                if (savedMessage) {
+                    document.getElementById('savedMessage').textContent = `Pesanmu: ${savedMessage}`;
+                } else {
+                    document.getElementById('savedMessage').textContent = 'Belum ada pesan yang disimpan.';
+                }
+            }
+    
+            window.onload = function() {
+                displaySavedMessage();
+            };
     <script>
         // Toggle Photo Gallery
         function togglePhotos() {
