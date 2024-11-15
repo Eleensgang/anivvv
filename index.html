@@ -13,11 +13,11 @@
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
-            overflow-x: hidden;
-            background-image: url('background.jpg'); 
+            background-image: url('background.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            overflow-x: hidden;
         }
 
         .anniversary-card, .message-card {
@@ -29,7 +29,6 @@
             padding: 20px;
             text-align: center;
             line-height: 1.6;
-            z-index: 1;
             margin-top: 20px;
         }
 
@@ -50,11 +49,15 @@
         }
 
         .photo-gallery {
-            display: none;
+            visibility: hidden;
+            opacity: 0;
             max-width: 90%;
             overflow-y: auto;
             margin-top: 20px;
             padding-bottom: 20px;
+            position: absolute;
+            transition: opacity 0.5s ease;
+            z-index: -1;
         }
 
         .photo-gallery img {
@@ -65,19 +68,13 @@
             margin: 10px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
         }
 
-        @media (min-width: 600px) {
-            .photo-gallery {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-        }
-
-        .hidden {
-            display: none;
+        .photo-gallery.active {
+            visibility: visible;
+            opacity: 1;
+            position: relative;
+            z-index: 1;
         }
 
         .message-area textarea {
@@ -101,97 +98,41 @@
     </style>
 </head>
 <body>
-    <body>
-        <!-- Background Music -->
-        <audio id="backgroundMusic" autoplay loop>
-            <source src="your-song.mp3" type="audio/mpeg">
-        </audio>
-        <button class="btn" onclick="toggleMute()">🔊 Hidupkan Musik</button>
-        
-    
-        <!-- Main Anniversary Card -->
-        <div class="anniversary-card" id="anniversaryCard">
-            <h1>Happy Anniversary!</h1>
-            <p>Hepi eniperseri yang ke 5 hehehe.... Ga kerasa udah 5 tahun aja kita. Banyak banget kan yang udah dilewatin.</p>
-            <p>Iya, aku sadar kok kalau aku emang rada cuek. Bukan berarti aku nggak sayang, aku cuma lagi fokus buat kita ke depannya. Hectic banget tapi ya harus dihadapin. Hehehe.</p>
-            <p>Yaudah, gitu dulu deh buat 5 tahun ini. My wishy yang terbaik buat kita nanti ke depannya. Semoga juga impian aku nikah di umur 25 dan punya 1 Milyar pertama di umur 25 bisa tercapai. Dan buat kamu, pokoknya semangat hadapin aja semuanya ya hehehe. Dah gitu aja.</p>
-            <p>Happy aniv yang ke 5 yaa - Borokokok -</p>
-            
-            <!-- Button to view photo memories -->
-            <button class="btn" onclick="togglePhotos()">💙 Lihat Foto Kenangan</button>
-            
-            <!-- Photo gallery for memories -->
-            <div class="photo-gallery hidden" id="photoGallery">
-                <img src="photo1.jpg" alt="Memory 1">
-                <img src="photo2.jpg" alt="Memory 2">
-                <img src="photo3.jpg" alt="Memory 3">
-                <img src="photo4.jpg" alt="Memory 4">
-                <img src="photo5.jpg" alt="Memory 5">
-                <img src="photo6.jpg" alt="Memory 5">
-                <img src="photo7.jpg" alt="Memory 5">
-                <img src="photo8.jpg" alt="Memory 5">
-                <img src="photo9.jpg" alt="Memory 5">
-                <img src="photo10.jpg" alt="Memory 5">
-                <button class="btn" onclick="togglePhotos()">💙 Kembali 💙</button>
-            </div>
-    
-            <!-- Button to navigate to message page -->
-            <button class="btn" onclick="showMessage()">💙 Tulis Pesanmu 💙</button>
-        </div>
-    
-        <!-- Message Card -->
-        <div class="message-card hidden" id="messageCard">
-            <h1>Pesan Ucapan</h1>
-            <div class="message-area">
-                <textarea id="userMessage" placeholder="Tulis pesanmu di sini..."></textarea>
-                <br>
-                <button class="btn" onclick="saveMessage()">💙 Simpan Pesan 💙</button>
-            </div>
-            <div class="saved-message" id="savedMessage"></div>
-            <button class="btn" onclick="goBack()">💙 Kembali ke Halaman Utama 💙</button>
-        </div>
-    
-        <script>
-            function togglePhotos() {
-                const gallery = document.getElementById('photoGallery');
-                gallery.classList.toggle('hidden');
-            }
-    
-            function showMessage() {
-                document.getElementById('anniversaryCard').classList.add('hidden');
-                document.getElementById('messageCard').classList.remove('hidden');
-                displaySavedMessage();
-            }
-    
-            function goBack() {
-                document.getElementById('messageCard').classList.add('hidden');
-                document.getElementById('photoGallery').classList.add('hidden');
-                document.getElementById('anniversaryCard').classList.remove('hidden');
-            }
-    
-            function saveMessage() {
-                const message = document.getElementById('userMessage').value.trim();
-                if (message) {
-                    localStorage.setItem('anniversaryMessage', message);
-                    displaySavedMessage();
-                    document.getElementById('userMessage').value = '';
-                } else {
-                    alert('Silakan tulis pesan sebelum menyimpan.');
-                }
-            }
-    
-            function displaySavedMessage() {
-                const savedMessage = localStorage.getItem('anniversaryMessage');
-                if (savedMessage) {
-                    document.getElementById('savedMessage').textContent = `Pesanmu: ${savedMessage}`;
-                } else {
-                    document.getElementById('savedMessage').textContent = 'Belum ada pesan yang disimpan.';
-                }
-            }
-    
-            window.onload = function() {
-                displaySavedMessage();
-            };
-        </script>
-    </body>
-    
+    <!-- Background Music -->
+    <audio id="backgroundMusic" autoplay loop muted>
+        <source src="your-song.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+    <button class="btn" onclick="toggleMute()">🔊 Hidupkan Musik</button>
+
+    <!-- Main Anniversary Card -->
+    <div class="anniversary-card" id="anniversaryCard">
+        <h1>Happy Anniversary!</h1>
+        <p>Hepi eniperseri yang ke 5 hehehe.... Ga kerasa udah 5 tahun aja kita.</p>
+        <button class="btn" onclick="togglePhotos()">💙 Lihat Foto Kenangan</button>
+    </div>
+
+    <!-- Photo Gallery -->
+    <div class="photo-gallery" id="photoGallery">
+        <img src="photo1.jpg" alt="Memory 1">
+        <img src="photo2.jpg" alt="Memory 2">
+        <img src="photo3.jpg" alt="Memory 3">
+        <button class="btn" onclick="togglePhotos()">💙 Kembali 💙</button>
+    </div>
+
+    <script>
+        // Toggle Photo Gallery
+        function togglePhotos() {
+            const gallery = document.getElementById('photoGallery');
+            gallery.classList.toggle('active');
+        }
+
+        // Toggle Background Music
+        function toggleMute() {
+            const music = document.getElementById('backgroundMusic');
+            music.muted = !music.muted;
+            alert(music.muted ? 'Musik dimatikan' : 'Musik dihidupkan');
+        }
+    </script>
+</body>
+</html>
